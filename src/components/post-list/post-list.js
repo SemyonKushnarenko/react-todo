@@ -3,10 +3,10 @@ import PostListItem from '../post-list-item';
 
 import './post-list.css';
 
+// create new component
+const PostList = ({data, onDelete}) => {
+    const elements = data.map(item => {
 
-const PostList = ({posts}) => {
-
-    const elements = posts.map(item => {
         if (typeof(item) === "object" && isEmpty(item)) {
             const {id, ...itemProps} = item;
 
@@ -14,7 +14,9 @@ const PostList = ({posts}) => {
                 <li 
                 key={id} 
                 className="list-group-item">
-                    <PostListItem {...itemProps} />
+                    <PostListItem 
+                    onDelete={ () => onDelete(id)} 
+                    {...itemProps} />
                 </li>
             )
         }
