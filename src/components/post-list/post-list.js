@@ -4,10 +4,8 @@ import PostListItem from '../post-list-item';
 import './post-list.css';
 
 // create new component
-const PostList = ({data, onDelete}) => {
+const PostList = ({data, onDelete, onToggleLiked, onToggleImportant}) => {
     const elements = data.map(item => {
-
-        if (typeof(item) === "object" && isEmpty(item)) {
             const {id, ...itemProps} = item;
 
             return (
@@ -15,22 +13,13 @@ const PostList = ({data, onDelete}) => {
                 key={id} 
                 className="list-group-item">
                     <PostListItem 
-                    onDelete={ () => onDelete(id)} 
+                    onDelete={() => onDelete(id)}
+                    onToggleLiked={() => onToggleLiked(id)}
+                    onToggleImportant={() => onToggleImportant(id)}
                     {...itemProps} />
                 </li>
             )
-        }
     });
-
-    function isEmpty(obj) {
-        for (let key in obj) {
-            if (key) {
-                return true
-            } else {
-                return false
-            }
-        }
-    }
 
     return (
         <ul className="app-list list-group">

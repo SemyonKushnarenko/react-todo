@@ -11,12 +11,10 @@ import styled from 'styled-components';
 export default class App extends Component {
     state = {
         data: [
-            4,
-            undefined,
-            {label: "Gonna learn", important: true, id: "aegdf"},
-            {label: "Gonna learn what are props and state", important: false, id: "agwbd"},
-            {label: "That's right", important: false, id: "aegraetrhanetrgdf"},
-            {label: "This app is working...", important: false, id: "aeggdsagfdf"}
+            {label: "Gonna learn", important: true, like: false, id: "aegdf"},
+            {label: "Gonna learn what are props and state", important: false, like: false, id: "agwbd"},
+            {label: "That's right", important: false, like: false, id: "aegraetrhanetrgdf"},
+            {label: "This app is working...", important: false, like: false, id: "aeggdsagfdf"}
         ]
     }
 
@@ -24,13 +22,7 @@ export default class App extends Component {
 
     deleteItem = (id) => {
         this.setState(({data}) => {
-
-            const newData = data.filter((elem) => {
-                if (typeof(elem) === "object" && elem.hasOwnProperty('id')) { 
-                    return elem.id !== id
-                }
-            });
-
+            const newData = data.filter(elem => elem.id !== id);
             return {
                 data: newData
             };
@@ -41,6 +33,7 @@ export default class App extends Component {
         const newItem = {
             label: body,
             important: false,
+            like: false,
             id: this.maxId++
         };
 
@@ -50,6 +43,28 @@ export default class App extends Component {
                 data: newData
             }
         });
+    }
+
+    onToggle = (id, whatIsToggled) => {
+        this.setState(({data}) => {
+            const index = data.findIndex(elem => elem.id === id);
+
+            const notToggledItem = data[index];
+            const toggledItem = {...notToggledItem, [whatIsToggled]: !notToggledItem[whatIsToggled]};
+
+            const newData = [...data.slice(0, index), toggledItem, ...data.slice(index + 1)];
+            return {
+                data: newData
+            }
+        });
+    }
+
+    onToggleImportant = (id) => {
+        this.onToggle(id, 'important');
+    } 
+
+    onToggleLiked = (id) => {
+        this.onToggle(id, 'like');
     }
 
     render() {
@@ -63,14 +78,24 @@ export default class App extends Component {
 
         const {data} = this.state;
 
+        const liked = data.filter(elem => elem.like).length;
+        const count = data.length; 
+
         return (
             <App>
-                <AppHeader/>
+                <AppHeader
+                    liked={liked}
+                    count={count}/>
                 <SearchPanelDiv>
                     <SearchPanel/>
                     <PostStatusFilter/>
                 </SearchPanelDiv>
-                <PostList data={data} onDelete={this.deleteItem}/>
+                <PostList 
+                    data={data}
+                    onDelete={this.deleteItem}
+                    onToggleLiked={this.onToggleLiked}
+                    onToggleImportant={this.onToggleImportant}
+                    />
                 <PostAddForm onAdd={this.addItem}/>
             </App>
         )
