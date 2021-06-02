@@ -9,13 +9,32 @@ import PostAddForm from '../post-add-form';
 import styled from 'styled-components';
 
 export default class App extends Component {
-    state = {
-        data: [
-            {label: "Gonna learn", important: true, like: false, id: "aegdf"},
-            {label: "Gonna learn what are props and state", important: false, like: false, id: "agwbd"},
-            {label: "That's right", important: false, like: false, id: "aegraetrhanetrgdf"},
-            {label: "This app is working...", important: false, like: false, id: "aeggdsagfdf"}
+    filterData = (
+        data = [
+            {label: "Make new posts", important: false, like: false, id: "aegdf"},
+            {label: "Tap on the star to make post important", important: true, like: false, id: "agwbd"},
+            {label: "Double tap to like", important: false, like: true, id: "aegraetrhanetrgdf"},
+            {label: "Add new posts", important: true, like: true, id: "aeggdsagfdf"},
+            {label: "Search post you need", important: true, like: true, id: "aeggdsff"}
         ]
+    ) => {
+        const newData = data.filter(item => typeof(item) === 'object');
+        const checkedData = newData.filter(item => item.hasOwnProperty('id', 'label', 'important', 'like'));
+        return checkedData;
+    }
+
+    state = {
+        data: this.filterData([
+            4,
+            undefined,
+            {label: "Make new posts", important: false, like: false, id: "aegdf"},
+            {label: "Tap on the star to make post important", important: true, like: false, id: "agwbd"},
+            {label: "Double tap to like", important: false, like: true, id: "aegraetrhanetrgdf"},
+            {label: "Add new posts", important: true, like: true, id: "aeggdsagfdf"},
+            {label: "Search post you need", important: true, like: true, id: "aeggdsff"}
+        ]),
+        term: '',
+        filter: 'all'
     }
 
     maxId = 1;
@@ -30,19 +49,21 @@ export default class App extends Component {
     }
 
     addItem = (body) => {
-        const newItem = {
-            label: body,
-            important: false,
-            like: false,
-            id: this.maxId++
-        };
-
-        this.setState(({data}) => {
-            const newData = [...data, newItem];
-            return {
-                data: newData
-            }
-        });
+        if (body !== '') {
+            const newItem = {
+                label: body,
+                important: false,
+                like: false,
+                id: this.maxId++
+            };
+    
+            this.setState(({data}) => {
+                const newData = [...data, newItem];
+                return {
+                    data: newData
+                }
+            });
+        }
     }
 
     onToggle = (id, whatIsToggled) => {
@@ -66,6 +87,26 @@ export default class App extends Component {
     onToggleLiked = (id) => {
         this.onToggle(id, 'like');
     }
+    //поиск строки term в каждом отдельном items[i], и возврат перебранного массива
+    searchItems = (items, term) => {
+        return items.filter(item => item.label.indexOf(term) > -1);
+    }
+
+    filterItems = (items, filter) => {
+        if (filter === 'like') {
+            return items.filter(item => item.like);
+        } else if (filter === 'all') {
+            return items;
+        }
+    }
+
+    onUpdateSearch = (term) => {
+        this.setState({term});
+    }
+
+    onFilterSelect = (filter) => {
+        this.setState({filter});
+    }
 
     render() {
         const App = styled.div`
@@ -76,10 +117,12 @@ export default class App extends Component {
             display: flex;
         `;
 
-        const {data} = this.state;
+        const {data, term, filter} = this.state;
 
         const liked = data.filter(elem => elem.like).length;
         const count = data.length; 
+
+        const visiblePosts = this.filterItems(this.searchItems(data, term), filter);
 
         return (
             <App>
@@ -87,11 +130,16 @@ export default class App extends Component {
                     liked={liked}
                     count={count}/>
                 <SearchPanelDiv>
-                    <SearchPanel/>
-                    <PostStatusFilter/>
+                    <SearchPanel
+                        onUpdateSearch={this.onUpdateSearch}
+                    />
+                    <PostStatusFilter
+                        filter={filter}
+                        onFilterSelect={this.onFilterSelect}
+                    />
                 </SearchPanelDiv>
                 <PostList 
-                    data={data}
+                    visiblePosts={visiblePosts}
                     onDelete={this.deleteItem}
                     onToggleLiked={this.onToggleLiked}
                     onToggleImportant={this.onToggleImportant}

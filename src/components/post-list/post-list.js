@@ -4,8 +4,8 @@ import PostListItem from '../post-list-item';
 import './post-list.css';
 
 // create new component
-const PostList = ({data, onDelete, onToggleLiked, onToggleImportant}) => {
-    const elements = data.map(item => {
+const PostList = ({visiblePosts, onDelete, onToggleLiked, onToggleImportant}) => {
+    const elements = visiblePosts.map(item => {
             const {id, ...itemProps} = item;
 
             return (
