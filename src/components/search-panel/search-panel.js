@@ -3,14 +3,10 @@ import React, {Component} from 'react';
 import './search-panel.css';
 
 export default class SearchPanel extends Component {
-    state = {
-        term: ''
-    }
-
     onUpdateSearch = (e) => {
         const term = e.target.value;
-        this.setState({term});
         this.props.onUpdateSearch(term);
+        e.target.value = term;
     }
 
     render() {
@@ -19,7 +15,8 @@ export default class SearchPanel extends Component {
                 className="form-control search-input"
                 type="text"
                 placeholder="Search posts..."
-                value={this.state.term}
+                autoFocus="autoFocus"
+                value={this.props.term}
                 onChange={this.onUpdateSearch}
             />
         )

@@ -132,6 +132,7 @@ export default class App extends Component {
                 <SearchPanelDiv>
                     <SearchPanel
                         onUpdateSearch={this.onUpdateSearch}
+                        term={term}
                     />
                     <PostStatusFilter
                         filter={filter}
