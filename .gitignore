@@ -21,3 +21,6 @@ yarn-debug.log*
 yarn-error.log*
 
 README.md
+temp_auto_push.bat
+temp_interactive_push.bat
+.gitignore

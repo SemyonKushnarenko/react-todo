@@ -1,5 +1,1 @@
-React todo app.
-Run commands: 
-### npm i
-after that
-### npm start
+# [React-todo](https://semyonkushnarenko.github.io/react-todo/build/index.html)
