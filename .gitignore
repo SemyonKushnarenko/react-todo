@@ -6,8 +6,9 @@
 # testing
 /coverage
 
-# production
-/build
+# dev
+/src
+/public
 
 # misc
 .DS_Store
@@ -21,3 +22,6 @@ yarn-debug.log*
 yarn-error.log*
 
 README.md
+
+package.json
+package-lock.json
